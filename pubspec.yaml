@@ -4,13 +4,17 @@ publish_to: "none"
 version: 3.0.0+1
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.9.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
   rive: ^0.14.11
+  firebase_core: ^4.13.0
+  cloud_firestore: ^6.8.0
+  firebase_auth: ^6.5.7
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
