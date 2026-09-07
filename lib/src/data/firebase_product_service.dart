@@ -1,18 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'product.dart';
 
 class FirebaseProductService {
-  FirebaseProductService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+  FirebaseProductService({FirebaseFirestore? firestore}) : _override = firestore;
 
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _override;
 
-  CollectionReference<Map<String, dynamic>> get _products =>
-      _firestore.collection('products');
+  FirebaseFirestore? get _firestore {
+    if (_override != null) return _override;
+    if (Firebase.apps.isEmpty) return null;
+    return FirebaseFirestore.instance;
+  }
+
+  CollectionReference<Map<String, dynamic>>? get _products =>
+      _firestore?.collection('products');
 
   Future<List<Product>> fetchAllProducts() async {
-    final snapshot = await _products.get();
+    final products = _products;
+    if (products == null) return const [];
+    final snapshot = await products.get();
     return snapshot.docs
         .map((doc) => Product.fromMap(doc.data()))
         .where((product) => product.code.isNotEmpty)
@@ -20,17 +28,20 @@ class FirebaseProductService {
   }
 
   Future<void> registerGlobalView(String productCode) async {
+    final products = _products;
     final code = productCode.trim();
-    if (code.isEmpty) return;
+    if (products == null || code.isEmpty) return;
 
-    await _products.doc(code).update({
+    await products.doc(code).update({
       'searchCount': FieldValue.increment(1),
       'lastViewedAt': FieldValue.serverTimestamp(),
     });
   }
 
   Future<void> saveProduct(Product product) async {
-    await _products.doc(product.code).set(
+    final products = _products;
+    if (products == null || product.code.trim().isEmpty) return;
+    await products.doc(product.code).set(
       {
         ...product.toMap(),
         'updatedAt': FieldValue.serverTimestamp(),
@@ -40,7 +51,8 @@ class FirebaseProductService {
   }
 
   Future<void> deleteProduct(String code) async {
-    if (code.trim().isEmpty) return;
-    await _products.doc(code.trim()).delete();
+    final products = _products;
+    if (products == null || code.trim().isEmpty) return;
+    await products.doc(code.trim()).delete();
   }
 }
