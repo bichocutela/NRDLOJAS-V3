@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _searchController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static const _categories = [
     ('Hortifruti', Icons.eco_outlined),
@@ -43,6 +44,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: const _NrdDrawer(),
       body: Container(
         decoration: const BoxDecoration(
@@ -70,6 +72,7 @@ class _HomePageState extends State<HomePage> {
                       TextField(
                         controller: _searchController,
                         textInputAction: TextInputAction.search,
+                        onSubmitted: (_) => _showSearch(context),
                         decoration: InputDecoration(
                           hintText: 'Pesquisar produto...',
                           prefixIcon: const Icon(Icons.search_rounded),
@@ -178,7 +181,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _openDrawer() => Scaffold.of(context).openDrawer();
+  void _openDrawer() => _scaffoldKey.currentState?.openDrawer();
 
   void _showSearch(BuildContext context) {
     showModalBottomSheet<void>(
