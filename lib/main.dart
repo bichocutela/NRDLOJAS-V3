@@ -4,6 +4,7 @@ import 'package:rive/rive.dart' as rive;
 
 import 'src/about/about_page.dart';
 import 'src/home/home_page_v3.dart';
+import 'src/motion/nrd_motion.dart';
 import 'src/promotions/promotions_page.dart';
 import 'src/settings/settings_page.dart';
 import 'src/theme/nrd_theme.dart';
@@ -25,6 +26,19 @@ Future<void> main() async {
 class NrdV3App extends StatelessWidget {
   const NrdV3App({super.key});
 
+  Route<dynamic>? _route(RouteSettings settings) {
+    final builder = switch (settings.name) {
+      '/' => (BuildContext context) => const HomePageV3(),
+      '/promotions' => (BuildContext context) => const PromotionsLoginPage(),
+      '/settings' => (BuildContext context) => const SettingsPage(),
+      '/about' => (BuildContext context) => const AboutPage(),
+      _ => null,
+    };
+
+    if (builder == null) return null;
+    return NrdPageRoute<void>(builder: builder);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,12 +48,7 @@ class NrdV3App extends StatelessWidget {
       darkTheme: NrdTheme.dark(),
       themeMode: ThemeMode.system,
       initialRoute: '/',
-      routes: {
-        '/': (_) => const HomePageV3(),
-        '/promotions': (_) => const PromotionsLoginPage(),
-        '/settings': (_) => const SettingsPage(),
-        '/about': (_) => const AboutPage(),
-      },
+      onGenerateRoute: _route,
     );
   }
 }
