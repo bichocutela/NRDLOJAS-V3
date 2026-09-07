@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' as rive;
 
@@ -9,6 +10,14 @@ import 'src/theme/nrd_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Firebase.initializeApp();
+  } catch (_) {
+    // Mantém o V3 abrindo em modo local até o host Flutter receber
+    // a configuração Firebase nativa correspondente ao projeto.
+  }
+
   await rive.RiveNative.init();
   runApp(const NrdV3App());
 }
