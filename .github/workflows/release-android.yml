@@ -1,0 +1,89 @@
+name: NRD V3 Android Release
+
+on:
+  push:
+    tags:
+      - 'v3.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Create Android platform when missing
+        run: |
+          if [ ! -d android ]; then
+            flutter create --platforms=android --org com.aistudio.codigomercado --project-name nrdlojas_v3 .
+          fi
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Restore release keystore
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release.keystore
+
+      - name: Configure release signing
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=release.keystore
+          EOF
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/build.gradle.kts')
+          s=p.read_text()
+          if 'key.properties' not in s:
+              s=s.replace('plugins {', 'import java.util.Properties\nimport java.io.FileInputStream\n\nval keystoreProperties = Properties()\nval keystorePropertiesFile = rootProject.file("key.properties")\nif (keystorePropertiesFile.exists()) { keystoreProperties.load(FileInputStream(keystorePropertiesFile)) }\n\nplugins {', 1)
+              s=s.replace('buildTypes {', 'signingConfigs {\n        create("release") {\n            keyAlias = keystoreProperties["keyAlias"] as String?\n            keyPassword = keystoreProperties["keyPassword"] as String?\n            storeFile = keystoreProperties["storeFile"]?.let { file(it) }\n            storePassword = keystoreProperties["storePassword"] as String?\n        }\n    }\n    buildTypes {', 1)
+              s=s.replace('release {', 'release {\n            signingConfig = signingConfigs.getByName("release")', 1)
+              p.write_text(s)
+          PY
+
+      - name: Build APK 3.4.010
+        run: flutter build apk --release --build-name=3.4.010 --build-number=304010
+
+      - name: Rename APK
+        run: cp build/app/outputs/flutter-apk/app-release.apk NRDLOJAS-V3-3.4.010.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NRDLOJAS-V3-3.4.010
+          path: NRDLOJAS-V3-3.4.010.apk
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: NRD Lojas V3 3.4.010
+          files: NRDLOJAS-V3-3.4.010.apk
+          generate_release_notes: true
