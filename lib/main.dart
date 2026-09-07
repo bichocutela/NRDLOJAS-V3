@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' as rive;
 
 import 'src/about/about_page.dart';
-import 'src/home/home_page.dart';
+import 'src/home/home_page_v3.dart';
 import 'src/promotions/promotions_page.dart';
 import 'src/settings/settings_page.dart';
 import 'src/theme/nrd_theme.dart';
@@ -26,7 +26,7 @@ class NrdV3App extends StatelessWidget {
       themeMode: ThemeMode.system,
       initialRoute: '/',
       routes: {
-        '/': (_) => const HomePage(),
+        '/': (_) => const HomePageV3(),
         '/promotions': (_) => const PromotionsLoginPage(),
         '/settings': (_) => const SettingsPage(),
         '/about': (_) => const AboutPage(),
