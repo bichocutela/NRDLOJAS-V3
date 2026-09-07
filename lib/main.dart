@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' as rive;
 
+import 'src/about/about_page.dart';
 import 'src/home/home_page.dart';
+import 'src/promotions/promotions_page.dart';
+import 'src/settings/settings_page.dart';
 import 'src/theme/nrd_theme.dart';
 
 Future<void> main() async {
@@ -21,7 +24,13 @@ class NrdV3App extends StatelessWidget {
       theme: NrdTheme.light(),
       darkTheme: NrdTheme.dark(),
       themeMode: ThemeMode.system,
-      home: const HomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (_) => const HomePage(),
+        '/promotions': (_) => const PromotionsLoginPage(),
+        '/settings': (_) => const SettingsPage(),
+        '/about': (_) => const AboutPage(),
+      },
     );
   }
 }
