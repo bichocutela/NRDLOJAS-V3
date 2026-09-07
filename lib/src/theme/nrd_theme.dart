@@ -10,6 +10,7 @@ class NrdTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      splashFactory: InkSparkle.splashFactory,
       colorScheme: ColorScheme.fromSeed(
         seedColor: _red,
         brightness: Brightness.light,
@@ -40,6 +41,7 @@ class NrdTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      splashFactory: InkSparkle.splashFactory,
       colorScheme: ColorScheme.fromSeed(
         seedColor: const Color(0xFF8CC7FF),
         brightness: Brightness.dark,
@@ -74,25 +76,30 @@ class GlassSoft extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     final shape = BorderRadius.circular(radius);
-    return ClipRRect(
-      borderRadius: shape,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: shape,
-            color: (dark ? const Color(0xFF111A26) : Colors.white)
-                .withValues(alpha: dark ? .72 : .68),
-            border: Border.all(color: Colors.white.withValues(alpha: dark ? .28 : .72)),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 24,
-                offset: const Offset(0, 10),
-                color: Colors.black.withValues(alpha: dark ? .24 : .08),
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: shape,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: shape,
+              color: (dark ? const Color(0xFF111A26) : Colors.white)
+                  .withValues(alpha: dark ? .70 : .66),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: dark ? .25 : .68),
               ),
-            ],
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 16,
+                  spreadRadius: -3,
+                  offset: const Offset(0, 7),
+                  color: Colors.black.withValues(alpha: dark ? .20 : .07),
+                ),
+              ],
+            ),
+            child: Padding(padding: padding, child: child),
           ),
-          child: Padding(padding: padding, child: child),
         ),
       ),
     );
