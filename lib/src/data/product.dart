@@ -49,22 +49,28 @@ class Product {
     );
   }
 
-  factory Product.fromJson(Map<String, dynamic> json) {
+  factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      id: (json['id'] as num?)?.toInt() ?? 0,
-      code: '${json['code'] ?? ''}',
-      name: '${json['name'] ?? ''}',
-      searchName: '${json['searchName'] ?? json['search_name'] ?? json['name'] ?? ''}',
-      category: '${json['category'] ?? ''}',
-      isFavorite: json['isFavorite'] == true || json['is_favorite'] == true,
-      searchCount: (json['searchCount'] as num?)?.toInt() ?? (json['search_count'] as num?)?.toInt() ?? 0,
-      lastSearchedAt: (json['lastSearchedAt'] as num?)?.toInt() ?? (json['last_searched_at'] as num?)?.toInt() ?? 0,
-      unit: '${json['unit'] ?? 'un'}',
-      imageUrl: json['imageUrl'] as String? ?? json['image_url'] as String?,
+      id: (map['id'] as num?)?.toInt() ?? 0,
+      code: '${map['code'] ?? ''}',
+      name: '${map['name'] ?? ''}',
+      searchName: '${map['searchName'] ?? map['search_name'] ?? map['name'] ?? ''}',
+      category: '${map['category'] ?? ''}',
+      isFavorite: map['isFavorite'] == true || map['is_favorite'] == true,
+      searchCount: (map['searchCount'] as num?)?.toInt() ??
+          (map['search_count'] as num?)?.toInt() ??
+          0,
+      lastSearchedAt: (map['lastSearchedAt'] as num?)?.toInt() ??
+          (map['last_searched_at'] as num?)?.toInt() ??
+          0,
+      unit: '${map['unit'] ?? 'un'}',
+      imageUrl: map['imageUrl'] as String? ?? map['image_url'] as String?,
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  factory Product.fromJson(Map<String, dynamic> json) => Product.fromMap(json);
+
+  Map<String, dynamic> toMap() => {
         'id': id,
         'code': code,
         'name': name,
@@ -76,4 +82,6 @@ class Product {
         'unit': unit,
         'imageUrl': imageUrl,
       };
+
+  Map<String, dynamic> toJson() => toMap();
 }
