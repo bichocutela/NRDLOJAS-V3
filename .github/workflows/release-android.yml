@@ -2,6 +2,8 @@ name: NRD V3 Android Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v3.*'
     paths:
