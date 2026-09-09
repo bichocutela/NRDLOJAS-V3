@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class NrdTheme {
@@ -10,7 +8,7 @@ class NrdTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      splashFactory: InkSparkle.splashFactory,
+      splashFactory: InkRipple.splashFactory,
       colorScheme: ColorScheme.fromSeed(
         seedColor: _red,
         brightness: Brightness.light,
@@ -24,14 +22,14 @@ class NrdTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white.withValues(alpha: .78),
+        fillColor: Colors.white.withValues(alpha: .84),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: .78)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: .82)),
         ),
       ),
     );
@@ -41,7 +39,7 @@ class NrdTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      splashFactory: InkSparkle.splashFactory,
+      splashFactory: InkRipple.splashFactory,
       colorScheme: ColorScheme.fromSeed(
         seedColor: const Color(0xFF8CC7FF),
         brightness: Brightness.dark,
@@ -50,7 +48,7 @@ class NrdTheme {
       cardTheme: const CardThemeData(elevation: 0, margin: EdgeInsets.zero),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFF111A26).withValues(alpha: .78),
+        fillColor: const Color(0xFF111A26).withValues(alpha: .86),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32),
           borderSide: BorderSide.none,
@@ -76,32 +74,25 @@ class GlassSoft extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     final shape = BorderRadius.circular(radius);
-    return RepaintBoundary(
-      child: ClipRRect(
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
         borderRadius: shape,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: shape,
-              color: (dark ? const Color(0xFF111A26) : Colors.white)
-                  .withValues(alpha: dark ? .70 : .66),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: dark ? .25 : .68),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 16,
-                  spreadRadius: -3,
-                  offset: const Offset(0, 7),
-                  color: Colors.black.withValues(alpha: dark ? .20 : .07),
-                ),
-              ],
-            ),
-            child: Padding(padding: padding, child: child),
-          ),
+        color: (dark ? const Color(0xFF111A26) : Colors.white)
+            .withValues(alpha: dark ? .86 : .84),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: dark ? .18 : .62),
         ),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8,
+            spreadRadius: -4,
+            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: dark ? .14 : .045),
+          ),
+        ],
       ),
+      child: Padding(padding: padding, child: child),
     );
   }
 }
