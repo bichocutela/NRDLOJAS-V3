@@ -7,7 +7,7 @@ on:
     tags:
       - 'v3.*'
     paths:
-      - '.release/3.4.010.trigger'
+      - '.release/3.4.011.trigger'
   workflow_dispatch:
 
 permissions:
@@ -74,22 +74,22 @@ jobs:
               p.write_text(s)
           PY
 
-      - name: Build APK 3.4.010
-        run: flutter build apk --release --build-name=3.4.010 --build-number=304010
+      - name: Build APK 3.4.011
+        run: flutter build apk --release --build-name=3.4.011 --build-number=304011
 
       - name: Rename APK
-        run: cp build/app/outputs/flutter-apk/app-release.apk NRDLOJAS-V3-3.4.010.apk
+        run: cp build/app/outputs/flutter-apk/app-release.apk NRDLOJAS-V3-3.4.011.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NRDLOJAS-V3-3.4.010
-          path: NRDLOJAS-V3-3.4.010.apk
+          name: NRDLOJAS-V3-3.4.011
+          path: NRDLOJAS-V3-3.4.011.apk
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v3.4.010
-          name: NRD Lojas V3 3.4.010
-          files: NRDLOJAS-V3-3.4.010.apk
+          tag_name: v3.4.011
+          name: NRD Lojas V3 3.4.011
+          files: NRDLOJAS-V3-3.4.011.apk
           generate_release_notes: true
