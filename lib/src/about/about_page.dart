@@ -14,7 +14,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  static const _currentVersion = '3.4.012';
+  static const _currentVersion = '3.4.013';
   static const _latestReleaseApi =
       'https://api.github.com/repos/bichocutela/NRDLOJAS-V3/releases/latest';
 
