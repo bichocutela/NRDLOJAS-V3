@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class NrdMotion {
-  static const Duration tap = Duration(milliseconds: 95);
-  static const Duration fast = Duration(milliseconds: 150);
-  static const Duration medium = Duration(milliseconds: 210);
+  static const Duration tap = Duration(milliseconds: 55);
+  static const Duration fast = Duration(milliseconds: 90);
+  static const Duration medium = Duration(milliseconds: 120);
 
   static const Curve standard = Curves.easeOutCubic;
-  static const Curve emphasized = Curves.easeOutBack;
+  static const Curve emphasized = Curves.easeOutCubic;
 }
 
 class PressScale extends StatefulWidget {
@@ -14,7 +14,7 @@ class PressScale extends StatefulWidget {
     required this.child,
     super.key,
     this.onTap,
-    this.scale = .965,
+    this.scale = .985,
     this.borderRadius,
   });
 
@@ -59,7 +59,7 @@ class MotionEntrance extends StatefulWidget {
     required this.child,
     super.key,
     this.delay = Duration.zero,
-    this.offset = const Offset(0, .035),
+    this.offset = const Offset(0, .012),
   });
 
   final Widget child;
@@ -76,23 +76,22 @@ class _MotionEntranceState extends State<MotionEntrance> {
   @override
   void initState() {
     super.initState();
-    Future<void>.delayed(widget.delay, () {
-      if (mounted) setState(() => _visible = true);
-    });
+    if (widget.delay == Duration.zero) {
+      _visible = true;
+    } else {
+      Future<void>.delayed(widget.delay, () {
+        if (mounted) setState(() => _visible = true);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSlide(
-      offset: _visible ? Offset.zero : widget.offset,
-      duration: NrdMotion.medium,
+    return AnimatedOpacity(
+      opacity: _visible ? 1 : 0,
+      duration: NrdMotion.fast,
       curve: NrdMotion.standard,
-      child: AnimatedOpacity(
-        opacity: _visible ? 1 : 0,
-        duration: NrdMotion.fast,
-        curve: NrdMotion.standard,
-        child: widget.child,
-      ),
+      child: widget.child,
     );
   }
 }
@@ -100,24 +99,12 @@ class _MotionEntranceState extends State<MotionEntrance> {
 class NrdPageRoute<T> extends PageRouteBuilder<T> {
   NrdPageRoute({required WidgetBuilder builder})
       : super(
-          transitionDuration: NrdMotion.medium,
+          transitionDuration: NrdMotion.fast,
           reverseTransitionDuration: NrdMotion.fast,
           pageBuilder: (context, animation, secondaryAnimation) => builder(context),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             final curved = CurvedAnimation(parent: animation, curve: NrdMotion.standard);
-            return FadeTransition(
-              opacity: curved,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(.035, .015),
-                  end: Offset.zero,
-                ).animate(curved),
-                child: ScaleTransition(
-                  scale: Tween<double>(begin: .985, end: 1).animate(curved),
-                  child: child,
-                ),
-              ),
-            );
+            return FadeTransition(opacity: curved, child: child);
           },
         );
 }
