@@ -7,7 +7,7 @@ on:
     tags:
       - 'v3.*'
     paths:
-      - '.release/3.4.011.trigger'
+      - '.release/3.4.012.trigger'
   workflow_dispatch:
 
 permissions:
@@ -65,31 +65,56 @@ jobs:
           EOF
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('android/app/build.gradle.kts')
-          s=p.read_text()
-          if 'key.properties' not in s:
-              s=s.replace('plugins {', 'import java.util.Properties\nimport java.io.FileInputStream\n\nval keystoreProperties = Properties()\nval keystorePropertiesFile = rootProject.file("key.properties")\nif (keystorePropertiesFile.exists()) { keystoreProperties.load(FileInputStream(keystorePropertiesFile)) }\n\nplugins {', 1)
-              s=s.replace('buildTypes {', 'signingConfigs {\n        create("release") {\n            keyAlias = keystoreProperties["keyAlias"] as String?\n            keyPassword = keystoreProperties["keyPassword"] as String?\n            storeFile = keystoreProperties["storeFile"]?.let { file(it) }\n            storePassword = keystoreProperties["storePassword"] as String?\n        }\n    }\n    buildTypes {', 1)
-              s=s.replace('release {', 'release {\n            signingConfig = signingConfigs.getByName("release")', 1)
-              p.write_text(s)
+          p = Path('android/app/build.gradle.kts')
+          s = p.read_text()
+
+          if 'val keystoreProperties = Properties()' not in s:
+              s = s.replace(
+                  'plugins {',
+                  'import java.util.Properties\nimport java.io.FileInputStream\n\nval keystoreProperties = Properties()\nval keystorePropertiesFile = rootProject.file("key.properties")\nif (keystorePropertiesFile.exists()) { keystoreProperties.load(FileInputStream(keystorePropertiesFile)) }\n\nplugins {',
+                  1,
+              )
+
+          if 'create("release")' not in s:
+              s = s.replace(
+                  'buildTypes {',
+                  'signingConfigs {\n        create("release") {\n            keyAlias = keystoreProperties["keyAlias"] as String?\n            keyPassword = keystoreProperties["keyPassword"] as String?\n            storeFile = keystoreProperties["storeFile"]?.let { file(it) }\n            storePassword = keystoreProperties["storePassword"] as String?\n        }\n    }\n    buildTypes {',
+                  1,
+              )
+
+          s = s.replace(
+              'signingConfig = signingConfigs.getByName("debug")',
+              'signingConfig = signingConfigs.getByName("release")',
+          )
+          p.write_text(s)
           PY
 
-      - name: Build APK 3.4.011
-        run: flutter build apk --release --build-name=3.4.011 --build-number=304011
+      - name: Build APK 3.4.012
+        run: flutter build apk --release --build-name=3.4.012 --build-number=304012
+
+      - name: Verify APK signing
+        run: |
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)
+          test -n "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk | tee /tmp/apk-signature.txt
+          if grep -q "Android Debug" /tmp/apk-signature.txt; then
+            echo "ERRO: APK foi assinado com certificado de debug."
+            exit 1
+          fi
 
       - name: Rename APK
-        run: cp build/app/outputs/flutter-apk/app-release.apk NRDLOJAS-V3-3.4.011.apk
+        run: cp build/app/outputs/flutter-apk/app-release.apk NRDLOJAS-V3-3.4.012.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NRDLOJAS-V3-3.4.011
-          path: NRDLOJAS-V3-3.4.011.apk
+          name: NRDLOJAS-V3-3.4.012
+          path: NRDLOJAS-V3-3.4.012.apk
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v3.4.011
-          name: NRD Lojas V3 3.4.011
-          files: NRDLOJAS-V3-3.4.011.apk
+          tag_name: v3.4.012
+          name: NRD Lojas V3 3.4.012
+          files: NRDLOJAS-V3-3.4.012.apk
           generate_release_notes: true
