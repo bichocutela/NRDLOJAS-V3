@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../home/home_page_v3.dart';
-import '../training/cashier_simulator_page.dart';
+import '../training/training_hub_page.dart';
 
 class NrdShell extends StatefulWidget {
   const NrdShell({super.key});
@@ -20,7 +20,7 @@ class _NrdShellState extends State<NrdShell> {
         index: _index,
         children: const [
           HomePageV3(),
-          CashierSimulatorPage(),
+          TrainingHubPage(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -33,9 +33,9 @@ class _NrdShellState extends State<NrdShell> {
             label: 'Início',
           ),
           NavigationDestination(
-            icon: Icon(Icons.point_of_sale_outlined),
-            selectedIcon: Icon(Icons.point_of_sale_rounded),
-            label: 'Treinar Caixa',
+            icon: Icon(Icons.school_outlined),
+            selectedIcon: Icon(Icons.school_rounded),
+            label: 'Treinamento',
           ),
         ],
       ),
