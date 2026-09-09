@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' as rive;
 
 import 'src/about/about_page.dart';
-import 'src/home/home_page_v3.dart';
 import 'src/motion/nrd_motion.dart';
 import 'src/promotions/promotions_page.dart';
 import 'src/settings/settings_page.dart';
+import 'src/shell/nrd_shell.dart';
 import 'src/theme/nrd_theme.dart';
 
 Future<void> main() async {
@@ -28,7 +28,7 @@ class NrdV3App extends StatelessWidget {
 
   Route<dynamic>? _route(RouteSettings settings) {
     final builder = switch (settings.name) {
-      '/' => (BuildContext context) => const HomePageV3(),
+      '/' => (BuildContext context) => const NrdShell(),
       '/promotions' => (BuildContext context) => const PromotionsLoginPage(),
       '/settings' => (BuildContext context) => const SettingsPage(),
       '/about' => (BuildContext context) => const AboutPage(),
