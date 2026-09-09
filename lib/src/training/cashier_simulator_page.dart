@@ -31,7 +31,7 @@ class _CashierSimulatorPageState extends State<CashierSimulatorPage> {
   String customerFree = 'CAIXA FECHADO';
   final List<String> history = [];
 
-  _Step get current => flow[step.clamp(0, flow.length - 1)];
+  _Step get current => flow[step >= flow.length ? flow.length - 1 : step];
 
   void resetState() {
     step = 0;
@@ -60,25 +60,25 @@ class _CashierSimulatorPageState extends State<CashierSimulatorPage> {
       setState(() {
         history.insert(0, key);
         if (history.length > 8) history.removeLast();
-        switch (key) {
-          case 'ENTRA':
-            operatorFree = 'ENTRA';
-            customerFree = 'AGUARDE...';
-          case 'TOTAL':
-            operatorFree = 'TOTAL DA COMPRA';
-            customerFree = 'TOTAL  R$ 0,00';
-          case 'DINHEIRO':
-            operatorFree = 'PAGAMENTO EM DINHEIRO';
-            customerFree = 'DINHEIRO';
-          case 'TEF':
-            operatorFree = 'PAGAMENTO TEF';
-            customerFree = 'AGUARDE O CARTÃO';
-          case 'ANULA':
-            operatorFree = 'ANULA / VOLTA';
-            customerFree = 'AGUARDE...';
-          default:
-            operatorFree = 'TECLA: $key';
-            customerFree = 'OPERAÇÃO EM TREINAMENTO';
+
+        if (key == 'ENTRA') {
+          operatorFree = 'ENTRA';
+          customerFree = 'AGUARDE...';
+        } else if (key == 'TOTAL') {
+          operatorFree = 'TOTAL DA COMPRA';
+          customerFree = 'TOTAL  R$ 0,00';
+        } else if (key == 'DINHEIRO') {
+          operatorFree = 'PAGAMENTO EM DINHEIRO';
+          customerFree = 'DINHEIRO';
+        } else if (key == 'TEF') {
+          operatorFree = 'PAGAMENTO TEF';
+          customerFree = 'AGUARDE O CARTÃO';
+        } else if (key == 'ANULA') {
+          operatorFree = 'ANULA / VOLTA';
+          customerFree = 'AGUARDE...';
+        } else {
+          operatorFree = 'TECLA: $key';
+          customerFree = 'OPERAÇÃO EM TREINAMENTO';
         }
       });
       return;
