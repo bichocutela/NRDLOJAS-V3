@@ -31,11 +31,11 @@ class _CashierSimulatorPageState extends State<CashierSimulatorPage> {
       subtitle: 'Finalização, pagamento e troco',
       icon: Icons.payments_outlined,
       steps: [
-        _Step('TOTAL', 'COMPRA R$ 18,50', 'TOTAL R$ 18,50', 'Pressione TOTAL.'),
-        _Step('DINHEIRO', 'FORMA DE PAGAMENTO', 'TOTAL R$ 18,50', 'Escolha DINHEIRO.'),
+        _Step('TOTAL', 'COMPRA R\$ 18,50', 'TOTAL R\$ 18,50', 'Pressione TOTAL.'),
+        _Step('DINHEIRO', 'FORMA DE PAGAMENTO', 'TOTAL R\$ 18,50', 'Escolha DINHEIRO.'),
         _Step('2', 'VALOR RECEBIDO: 2_', 'AGUARDE...', 'Digite um valor demonstrativo.'),
         _Step('0', 'VALOR RECEBIDO: 20_', 'AGUARDE...', 'Continue o valor.'),
-        _Step('ENTRA', 'DINHEIRO R$ 20,00', 'TROCO R$ 1,50', 'Confirme com ENTRA.'),
+        _Step('ENTRA', 'DINHEIRO R\$ 20,00', 'TROCO R\$ 1,50', 'Confirme com ENTRA.'),
       ],
     ),
     TrainingMission.vendaCartao: _Mission(
@@ -43,7 +43,7 @@ class _CashierSimulatorPageState extends State<CashierSimulatorPage> {
       subtitle: 'Fluxo demonstrativo de pagamento TEF',
       icon: Icons.credit_card_rounded,
       steps: [
-        _Step('TOTAL', 'COMPRA R$ 42,90', 'TOTAL R$ 42,90', 'Pressione TOTAL.'),
+        _Step('TOTAL', 'COMPRA R\$ 42,90', 'TOTAL R\$ 42,90', 'Pressione TOTAL.'),
         _Step('TEF', 'SELECIONE PAGAMENTO', 'AGUARDE O CARTÃO', 'Pressione TEF.'),
         _Step('ENTRA', 'TEF EM TREINAMENTO', 'INSIRA/APROXIME CARTÃO', 'Confirme a etapa demonstrativa.'),
       ],
@@ -66,7 +66,7 @@ class _CashierSimulatorPageState extends State<CashierSimulatorPage> {
         _Step('SANGRIA', 'SANGRIA', 'AGUARDE...', 'Pressione SANGRIA.'),
         _Step('1', 'VALOR: 1_', 'AGUARDE...', 'Digite um valor demonstrativo.'),
         _Step('0', 'VALOR: 10_', 'AGUARDE...', 'Continue o valor.'),
-        _Step('ENTRA', 'SANGRIA R$ 10,00', 'AGUARDE...', 'Confirme com ENTRA.'),
+        _Step('ENTRA', 'SANGRIA R\$ 10,00', 'AGUARDE...', 'Confirme com ENTRA.'),
       ],
     ),
     TrainingMission.fechamento: _Mission(
@@ -137,7 +137,7 @@ class _CashierSimulatorPageState extends State<CashierSimulatorPage> {
           customerFree = 'AGUARDE...';
         } else if (key == 'TOTAL') {
           operatorFree = 'TOTAL DA COMPRA';
-          customerFree = 'TOTAL R$ 0,00';
+          customerFree = 'TOTAL R\$ 0,00';
         } else if (key == 'DINHEIRO') {
           operatorFree = 'PAGAMENTO EM DINHEIRO';
           customerFree = 'DINHEIRO';
