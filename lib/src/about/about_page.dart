@@ -229,7 +229,7 @@ class _AboutPageState extends State<AboutPage> {
                     children: [
                       Expanded(child: FilledButton.icon(onPressed: _checkForUpdates, icon: const Icon(Icons.android), label: const Text('Verificar Android'))),
                       const SizedBox(width: 8),
-                      const Expanded(child: OutlinedButton.icon(onPressed: null, icon: Icon(Icons.phone_iphone), label: Text('iPhone'))),
+                      Expanded(child: OutlinedButton.icon(onPressed: null, icon: const Icon(Icons.phone_iphone), label: const Text('iPhone'))),
                     ],
                   ),
                 ],
