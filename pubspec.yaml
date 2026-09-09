@@ -1,7 +1,7 @@
 name: nrdlojas_v3
 description: NRD Lojas V3 - Flutter UI with Android Jetpack Compose native integration.
 publish_to: "none"
-version: 3.4.011+304011
+version: 3.4.012+304012
 
 environment:
   sdk: ">=3.9.0 <4.0.0"
