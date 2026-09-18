@@ -13,8 +13,7 @@ class HomePageV3 extends StatefulWidget {
 class _HomePageV3State extends State<HomePageV3> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _searchController = TextEditingController();
-  String _query = '';
-  bool _searching = false;
+  final _isSearching = ValueNotifier<bool>(false);
 
   static const _categories = [
     ('Hortifruti', Icons.eco_outlined),
@@ -82,83 +81,91 @@ class _HomePageV3State extends State<HomePageV3> {
                     delay: const Duration(milliseconds: 35),
                     child: Column(
                       children: [
-                        TextField(
-                          controller: _searchController,
-                          textInputAction: TextInputAction.search,
-                          onChanged: (value) => setState(() => _query = value),
-                          onSubmitted: (_) => _showSearch(),
-                          decoration: InputDecoration(
-                            hintText: 'Pesquisar produto...',
-                            prefixIcon: const Icon(Icons.search_rounded),
-                            suffixIcon: _query.isNotEmpty
-                                ? IconButton(
-                                    onPressed: () {
-                                      _searchController.clear();
-                                      setState(() => _query = '');
-                                    },
-                                    icon: const Icon(Icons.clear_rounded),
-                                  )
-                                : IconButton(
-                                    tooltip: 'Pesquisar por voz',
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.mic_none_rounded),
-                                  ),
-                          ),
+                        ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: _searchController,
+                          builder: (context, value, _) {
+                            return TextField(
+                              controller: _searchController,
+                              textInputAction: TextInputAction.search,
+                              onSubmitted: (_) => _showSearch(),
+                              decoration: InputDecoration(
+                                hintText: 'Pesquisar produto...',
+                                prefixIcon: const Icon(Icons.search_rounded),
+                                suffixIcon: value.text.isNotEmpty
+                                    ? IconButton(
+                                        onPressed: () {
+                                          _searchController.clear();
+                                        },
+                                        icon: const Icon(Icons.clear_rounded),
+                                      )
+                                    : IconButton(
+                                        tooltip: 'Pesquisar por voz',
+                                        onPressed: () {},
+                                        icon: const Icon(Icons.mic_none_rounded),
+                                      ),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 12),
-                        PressScale(
-                          borderRadius: BorderRadius.circular(28),
-                          onTap: _showSearch,
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 56,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(28),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Theme.of(context).colorScheme.primary,
-                                    Theme.of(context).colorScheme.primary.withValues(alpha: .80),
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: _searching ? 22 : 14,
-                                    spreadRadius: _searching ? 1 : -2,
-                                    offset: const Offset(0, 7),
-                                    color: Theme.of(context).colorScheme.primary.withValues(alpha: .24),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _isSearching,
+                          builder: (context, isSearching, _) {
+                            return PressScale(
+                              borderRadius: BorderRadius.circular(28),
+                              onTap: _showSearch,
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 56,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(28),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Theme.of(context).colorScheme.primary,
+                                        Theme.of(context).colorScheme.primary.withValues(alpha: .80),
+                                      ],
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: isSearching ? 22 : 14,
+                                        spreadRadius: isSearching ? 1 : -2,
+                                        offset: const Offset(0, 7),
+                                        color: Theme.of(context).colorScheme.primary.withValues(alpha: .24),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              child: Center(
-                                child: AnimatedSwitcher(
-                                  duration: NrdMotion.fast,
-                                  child: _searching
-                                      ? const SizedBox(
-                                          key: ValueKey('loading'),
-                                          width: 22,
-                                          height: 22,
-                                          child: CircularProgressIndicator(strokeWidth: 2.5),
-                                        )
-                                      : const Row(
-                                          key: ValueKey('label'),
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.search_rounded, color: Colors.white),
-                                            SizedBox(width: 8),
-                                            Text(
-                                              'Pesquisar',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w800,
-                                              ),
+                                  child: Center(
+                                    child: AnimatedSwitcher(
+                                      duration: NrdMotion.fast,
+                                      child: isSearching
+                                          ? const SizedBox(
+                                              key: ValueKey('loading'),
+                                              width: 22,
+                                              height: 22,
+                                              child: CircularProgressIndicator(strokeWidth: 2.5),
+                                            )
+                                          : const Row(
+                                              key: ValueKey('label'),
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(Icons.search_rounded, color: Colors.white),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  'Pesquisar',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -267,11 +274,11 @@ class _HomePageV3State extends State<HomePageV3> {
   }
 
   Future<void> _showSearch() async {
-    if (_searching) return;
-    setState(() => _searching = true);
+    if (_isSearching.value) return;
+    _isSearching.value = true;
     await Future<void>.delayed(const Duration(milliseconds: 110));
     if (!mounted) return;
-    setState(() => _searching = false);
+    _isSearching.value = false;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
